@@ -99,8 +99,22 @@
 #   The SMTP user
 # @param smtp_password
 #   The SMTP password
+# @param receiveemail_protocol
+#   Specifies the protocol used for receiving emails. Valid options are 'POP3',
+#   'IMAP' and 'NONE'
+# @param receiveemail_host
+#   The hostname of the mailserver
+# @param receiveemail_port
+#   The port the email server exposes for receiving emails
+# @param receiveemail_encryption
+#   Encryption standard used for transport layer security between Gerrit and
+#   the email server. Possible values include 'NONE', 'SSL' and 'TLS'
+# @param receiveemail_username
+#   Username used for authenticating with the email server
+# @param receiveemail_password
+#   Password used for authenticating with the email server
 # @param mysql_java_connector
-#  The name of the java connector file
+#   The name of the java connector file
 # @param mysql_java_package
 #   The name of the java connector package
 # @param manage_service
@@ -159,6 +173,12 @@ class gerrit (
   $smtp_encryption          = undef,
   $smtp_user                = undef,
   $smtp_password            = undef,
+  $receiveemail_protocol    = undef,
+  $receiveemail_host        = undef,
+  $receiveemail_port        = undef,
+  $receiveemail_encryption  = undef,
+  $receiveemail_username    = undef,
+  $receiveemail_password    = undef,
   $manage_service           = true,
   $mysql_java_connector     = $gerrit::params::mysql_java_connector,
   $mysql_java_package       = $gerrit::params::mysql_java_package,
@@ -472,6 +492,56 @@ class gerrit (
       'sendemail.smtpPass':
         ensure => present,
         value  => $smtp_password,
+        file   => "${target}/etc/secure.config",
+        user   => $user,
+    }
+  }
+
+  if $receiveemail_protocol {
+    gerrit::config {
+      'receiveemail.protocol':
+        ensure => present,
+        value  => $receiveemail_protocol,
+    }
+  }
+
+  if $receiveemail_host {
+    gerrit::config {
+      'receiveemail.host':
+        ensure => present,
+        value  => $receiveemail_host,
+    }
+  }
+
+  if $receiveemail_port {
+    gerrit::config {
+      'receiveemail.port':
+        ensure => present,
+        value  => $receiveemail_port,
+    }
+  }
+
+  if $receiveemail_encryption {
+    gerrit::config {
+      'receiveemail.encryption':
+        ensure => present,
+        value  => $receiveemail_encryption,
+    }
+  }
+
+  if $receiveemail_username {
+    gerrit::config {
+      'receiveemail.username':
+        ensure => present,
+        value  => $receiveemail_username,
+    }
+  }
+
+  if $receiveemail_password {
+    gerrit::config {
+      'receiveemail.password':
+        ensure => present,
+        value  => $receiveemail_password,
         file   => "${target}/etc/secure.config",
         user   => $user,
     }
